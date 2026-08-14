@@ -810,6 +810,7 @@ test("prevents removing a screen with 'removePrevented' event", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(1);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -825,6 +826,7 @@ test("prevents removing a screen with 'removePrevented' event", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -848,6 +850,7 @@ test("prevents removing a screen with 'removePrevented' event", () => {
   expect(onBeforeRemove).toHaveBeenCalledTimes(1);
 
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -866,6 +869,7 @@ test("prevents removing a screen with 'removePrevented' event", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(3);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -934,6 +938,7 @@ test("prevents removing a child screen with 'removePrevented' event", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(1);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -949,6 +954,7 @@ test("prevents removing a child screen with 'removePrevented' event", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -979,6 +985,7 @@ test("prevents removing a child screen with 'removePrevented' event", () => {
   expect(onBeforeRemove).toHaveBeenCalledTimes(1);
 
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -1007,6 +1014,7 @@ test("prevents removing a child screen with 'removePrevented' event", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(3);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -1080,6 +1088,7 @@ test("prevents removing a grand child screen with 'removePrevented' event", () =
 
   expect(onStateChange).toHaveBeenCalledTimes(1);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -1095,6 +1104,7 @@ test("prevents removing a grand child screen with 'removePrevented' event", () =
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -1137,6 +1147,7 @@ test("prevents removing a grand child screen with 'removePrevented' event", () =
   expect(onBeforeRemove).toHaveBeenCalledTimes(1);
 
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -1177,6 +1188,7 @@ test("prevents removing a grand child screen with 'removePrevented' event", () =
 
   expect(onStateChange).toHaveBeenCalledTimes(3);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -1294,6 +1306,7 @@ test("prevents removing by multiple screens with 'removePrevented' event", () =>
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz', 'bax'],
@@ -1353,6 +1366,7 @@ test("prevents removing a child screen with 'removePrevented' event with 'resetR
 
   expect(onStateChange).toHaveBeenCalledTimes(1);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -1390,6 +1404,7 @@ test("prevents removing a child screen with 'removePrevented' event with 'resetR
   expect(onBeforeRemove).toHaveBeenCalledTimes(1);
 
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -1427,6 +1442,7 @@ test("prevents removing a child screen with 'removePrevented' event with 'resetR
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],

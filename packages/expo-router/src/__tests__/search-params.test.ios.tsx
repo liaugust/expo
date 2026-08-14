@@ -86,7 +86,6 @@ describe('push', () => {
         },
       ],
       stale: false,
-      type: 'stack',
     });
 
     testRouter.back();
@@ -121,7 +120,6 @@ describe('push', () => {
         },
       ],
       stale: false,
-      type: 'stack',
     });
 
     expect(testRouter.canGoBack()).toBe(false);
@@ -177,7 +175,6 @@ describe('navigate', () => {
         },
       ],
       stale: false,
-      type: 'stack',
     });
 
     // There is nothing to go back, as we only re-rerendered the same route.
@@ -244,7 +241,6 @@ describe('navigate', () => {
         },
       ],
       stale: false,
-      type: 'stack',
     });
 
     testRouter.dismissAll();
@@ -274,7 +270,6 @@ describe('navigate', () => {
         },
       ],
       stale: false,
-      type: 'stack',
     });
 
     expect(testRouter.canGoBack()).toBe(false);
@@ -345,7 +340,6 @@ describe('replace', () => {
         },
       ],
       stale: false,
-      type: 'stack',
     });
 
     testRouter.back('/page?a=true');

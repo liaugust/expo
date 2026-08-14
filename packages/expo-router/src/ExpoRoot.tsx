@@ -156,20 +156,19 @@ function ContextNavigator({
   return (
     <StoreContext.Provider value={store}>
       <RouterRegistryProvider>
-        <UpstreamNavigationContainer
-          ref={store.navigationRef}
-          initialState={store.state}
-          linking={store.linking as LinkingOptions<any>}
-          onUnhandledAction={onUnhandledAction}
-          onStateChange={store.onStateChange}
-          documentTitle={documentTitle}
-          onReady={onNavigationReady}>
-          <ServerContext.Provider value={serverContext}>
+        <ServerContext.Provider value={serverContext}>
+          <UpstreamNavigationContainer
+            ref={store.navigationRef}
+            linking={store.linking as LinkingOptions<any>}
+            onUnhandledAction={onUnhandledAction}
+            onStateChange={store.onStateChange}
+            documentTitle={documentTitle}
+            onReady={onNavigationReady}>
             <WrapperComponent>
               <Content />
             </WrapperComponent>
-          </ServerContext.Provider>
-        </UpstreamNavigationContainer>
+          </UpstreamNavigationContainer>
+        </ServerContext.Provider>
       </RouterRegistryProvider>
     </StoreContext.Provider>
   );

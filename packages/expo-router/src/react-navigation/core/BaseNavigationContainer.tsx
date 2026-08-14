@@ -41,6 +41,11 @@ type State = NavigationState | PartialState<NavigationState> | undefined;
 const serializableWarnings: string[] = [];
 const duplicateNameWarnings: string[] = [];
 
+function isCompleteState(state: InitialState | undefined): state is NavigationState {
+  // Seeded states are complete; persisted public `initialState` values can still need rehydration.
+  return state != null && 'stale' in state && state.stale === false;
+}
+
 /**
  * Remove `key` and `routeNames` from the state objects recursively to get partial state.
  *
@@ -103,7 +108,9 @@ export function BaseNavigationContainer({
   }
 
   const { state, getState, setState, scheduleUpdate, flushUpdates } = useSyncState<State>(() =>
-    getPartialState(initialState == null ? undefined : initialState)
+    isCompleteState(initialState)
+      ? initialState
+      : getPartialState(initialState == null ? undefined : initialState)
   );
 
   const isFirstMountRef = React.useRef<boolean>(true);

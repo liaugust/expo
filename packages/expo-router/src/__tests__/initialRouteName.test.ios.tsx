@@ -100,21 +100,31 @@ it('push should include (group)/index as an anchor route when using withAnchor',
     '(group)/test': () => null,
   });
 
-  // Initial stale state
+  // Initial complete state
   expect(store.state).toStrictEqual({
+    index: 0,
+    key: expect.any(String),
+    routeNames: ['__root', '+not-found', '_sitemap'],
     routes: [
       {
+        key: expect.any(String),
         name: '__root',
         state: {
+          index: 0,
+          key: expect.any(String),
+          routeNames: ['index', '(group)'],
           routes: [
             {
+              key: expect.any(String),
               name: 'index',
               path: '/',
             },
           ],
+          stale: false,
         },
       },
     ],
+    stale: false,
   });
 
   act(() => router.push('/orange', { withAnchor: true }));
@@ -170,7 +180,6 @@ it('push should include (group)/index as an anchor route when using withAnchor',
       },
     ],
     stale: false,
-    type: 'stack',
   });
 });
 
@@ -184,21 +193,31 @@ it('push should ignore (group)/index as an initial route if no anchor is specifi
     '(group)/test': () => null,
   });
 
-  // Initial stale state
+  // Initial complete state
   expect(store.state).toStrictEqual({
+    index: 0,
+    key: expect.any(String),
+    routeNames: ['__root', '+not-found', '_sitemap'],
     routes: [
       {
+        key: expect.any(String),
         name: '__root',
         state: {
+          index: 0,
+          key: expect.any(String),
+          routeNames: ['index', '(group)'],
           routes: [
             {
+              key: expect.any(String),
               name: 'index',
               path: '/',
             },
           ],
+          stale: false,
         },
       },
     ],
+    stale: false,
   });
 
   act(() => router.push('/orange'));
@@ -250,6 +269,5 @@ it('push should ignore (group)/index as an initial route if no anchor is specifi
       },
     ],
     stale: false,
-    type: 'stack',
   });
 });

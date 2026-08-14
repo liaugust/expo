@@ -2,17 +2,18 @@ import * as ExpoLinking from 'expo-linking';
 import { type RefObject, useEffect, useCallback, useRef } from 'react';
 import { Linking, Platform } from 'react-native';
 
+import { createSeededRootState } from '../global-state/createSeededNavigationState';
 import { routingQueue } from '../global-state/routingQueue';
+import { useExpoRouterStore } from '../global-state/storeContext';
 import {
   type LinkingOptions,
   getStateFromPath as getStateFromPathDefault,
   type NavigationContainerRef,
+  type NavigationState,
   type ParamListBase,
   useNavigationIndependentTree,
 } from '../react-navigation/native';
 import { extractExpoPathFromURL } from './extractPathFromURL';
-
-type ResultState = ReturnType<typeof getStateFromPathDefault>;
 
 type Options = LinkingOptions<ParamListBase>;
 
@@ -51,6 +52,7 @@ export function useLinking(
   onUnhandledLinking: (lastUnhandledLining: string | undefined) => void
 ) {
   const independent = useNavigationIndependentTree();
+  const store = useExpoRouterStore();
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') {
@@ -108,12 +110,15 @@ export function useLinking(
   });
 
   const getStateFromURL = useCallback(
-    (url: string | null | undefined) => {
+    (url: string | null | undefined, normalizeInitialPath = false) => {
       if (!url || (filterRef.current && !filterRef.current(url))) {
         return undefined;
       }
 
-      const path = extractExpoPathFromURL(prefixesRef.current, url);
+      let path = extractExpoPathFromURL(prefixesRef.current, url);
+      if (normalizeInitialPath && path !== undefined && !path.startsWith('/')) {
+        path = `/${path}`;
+      }
 
       return path !== undefined ? getStateFromPathRef.current(path, configRef.current) : undefined;
     },
@@ -122,33 +127,36 @@ export function useLinking(
   );
 
   const getInitialState = useCallback(() => {
-    let state: ResultState | undefined;
+    let state: NavigationState | undefined;
 
     if (enabledRef.current) {
       const url = getInitialURLRef.current();
 
-      if (url != null) {
-        if (typeof url !== 'string') {
-          return url.then((url) => {
-            const state = getStateFromURL(url);
+      if (url != null && typeof url !== 'string') {
+        return url.then((url) => {
+          const routeNode = store?.routeNode;
+          const state = routeNode
+            ? createSeededRootState(getStateFromURL(url, true), routeNode)
+            : undefined;
 
-            if (typeof url === 'string') {
-              // If the link were handled, it gets cleared in NavigationContainer
-              onUnhandledLinking(extractExpoPathFromURL(prefixes, url));
-            }
+          if (typeof url === 'string') {
+            // If the link were handled, it gets cleared in NavigationContainer
+            onUnhandledLinking(extractExpoPathFromURL(prefixes, url));
+          }
 
-            return state;
-          });
-        } else {
-          onUnhandledLinking(extractExpoPathFromURL(prefixes, url));
-        }
+          return state;
+        });
+      } else if (typeof url === 'string') {
+        // If the link were handled, it gets cleared in NavigationContainer
+        onUnhandledLinking(extractExpoPathFromURL(prefixes, url));
       }
 
-      state = getStateFromURL(url);
+      const routeNode = store?.routeNode;
+      state = routeNode ? createSeededRootState(getStateFromURL(url, true), routeNode) : undefined;
     }
 
     const thenable = {
-      then(onfulfilled?: (state: ResultState | undefined) => void) {
+      then(onfulfilled?: (state: NavigationState | undefined) => void) {
         return Promise.resolve(onfulfilled ? onfulfilled(state) : state);
       },
       catch() {
@@ -156,7 +164,7 @@ export function useLinking(
       },
     };
 
-    return thenable as PromiseLike<ResultState | undefined>;
+    return thenable as PromiseLike<NavigationState | undefined>;
   }, [getStateFromURL, onUnhandledLinking, prefixes]);
 
   useEffect(() => {

@@ -1,17 +1,18 @@
 import { type RefObject, useEffect, useCallback, useRef, use } from 'react';
 
+import { createSeededRootState } from '../global-state/createSeededNavigationState';
 import { ServerContext } from '../global-state/serverLocationContext';
+import { useExpoRouterStore } from '../global-state/storeContext';
 import {
   type LinkingOptions,
   getPathFromState as getPathFromStateDefault,
   getStateFromPath as getStateFromPathDefault,
   type NavigationContainerRef,
+  type NavigationState,
   type ParamListBase,
   useNavigationIndependentTree,
 } from '../react-navigation/native';
 import { useBrowserHistorySync } from './useBrowserHistorySync';
-
-type ResultState = ReturnType<typeof getStateFromPathDefault>;
 
 const linkingHandlers: symbol[] = [];
 
@@ -28,6 +29,7 @@ export function useLinking(
   onUnhandledLinking: (lastUnhandledLining: string | undefined) => void
 ) {
   const independent = useNavigationIndependentTree();
+  const store = useExpoRouterStore();
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') {
@@ -81,7 +83,7 @@ export function useLinking(
   const server = use(ServerContext);
 
   const getInitialState = useCallback(() => {
-    let value: ResultState | undefined;
+    let value: NavigationState | undefined;
 
     if (enabledRef.current) {
       const location =
@@ -91,8 +93,11 @@ export function useLinking(
         ? location.pathname + location.search + (location.hash ?? '')
         : undefined;
 
-      if (path) {
-        value = getStateFromPathRef.current(path, configRef.current);
+      if (path && store?.routeNode) {
+        value = createSeededRootState(
+          getStateFromPathRef.current(path, configRef.current),
+          store.routeNode
+        );
       }
 
       // If the link were handled, it gets cleared in NavigationContainer
@@ -100,7 +105,7 @@ export function useLinking(
     }
 
     const thenable = {
-      then(onfulfilled?: (state: ResultState | undefined) => void) {
+      then(onfulfilled?: (state: NavigationState | undefined) => void) {
         return Promise.resolve(onfulfilled ? onfulfilled(value) : value);
       },
       catch() {
@@ -108,7 +113,7 @@ export function useLinking(
       },
     };
 
-    return thenable as PromiseLike<ResultState | undefined>;
+    return thenable as PromiseLike<NavigationState | undefined>;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

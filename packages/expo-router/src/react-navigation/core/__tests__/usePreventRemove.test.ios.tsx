@@ -267,6 +267,7 @@ test("prevents removing a screen with 'usePreventRemove' hook", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(1);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -282,6 +283,7 @@ test("prevents removing a screen with 'usePreventRemove' hook", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -300,6 +302,7 @@ test("prevents removing a screen with 'usePreventRemove' hook", () => {
   expect(onPreventRemove).toHaveBeenCalledTimes(1);
 
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -318,6 +321,7 @@ test("prevents removing a screen with 'usePreventRemove' hook", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(3);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -421,6 +425,7 @@ test("prevents removing a screen when 'usePreventRemove' hook is called multiple
 
   expect(onStateChange).toHaveBeenCalledTimes(1);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -436,6 +441,7 @@ test("prevents removing a screen when 'usePreventRemove' hook is called multiple
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -454,6 +460,7 @@ test("prevents removing a screen when 'usePreventRemove' hook is called multiple
   expect(onPreventRemove).toHaveBeenCalledTimes(1);
 
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -472,6 +479,7 @@ test("prevents removing a screen when 'usePreventRemove' hook is called multiple
 
   expect(onStateChange).toHaveBeenCalledTimes(3);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -522,6 +530,7 @@ test("should have no effect when 'usePreventRemove' hook is set to false", () =>
 
   expect(onStateChange).toHaveBeenCalledTimes(1);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -537,6 +546,7 @@ test("should have no effect when 'usePreventRemove' hook is set to false", () =>
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -554,6 +564,7 @@ test("should have no effect when 'usePreventRemove' hook is set to false", () =>
   expect(onStateChange).toHaveBeenCalledTimes(3);
 
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -567,6 +578,7 @@ test("should have no effect when 'usePreventRemove' hook is set to false", () =>
 
   expect(onStateChange).toHaveBeenCalledTimes(5);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -629,6 +641,7 @@ test("prevents removing a child screen with 'usePreventRemove' hook", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(1);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -644,6 +657,7 @@ test("prevents removing a child screen with 'usePreventRemove' hook", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -674,6 +688,7 @@ test("prevents removing a child screen with 'usePreventRemove' hook", () => {
   expect(onPreventRemove).toHaveBeenCalledTimes(1);
 
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -700,6 +715,7 @@ test("prevents removing a child screen with 'usePreventRemove' hook", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -729,6 +745,7 @@ test("prevents removing a child screen with 'usePreventRemove' hook", () => {
 
   expect(onStateChange).toHaveBeenCalledTimes(4);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -795,6 +812,7 @@ test("prevents removing a grand child screen with 'usePreventRemove' hook", () =
 
   expect(onStateChange).toHaveBeenCalledTimes(1);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -810,6 +828,7 @@ test("prevents removing a grand child screen with 'usePreventRemove' hook", () =
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -852,6 +871,7 @@ test("prevents removing a grand child screen with 'usePreventRemove' hook", () =
   expect(onPreventRemove).toHaveBeenCalledTimes(1);
 
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 2,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -893,6 +913,7 @@ test("prevents removing a grand child screen with 'usePreventRemove' hook", () =
 
   expect(onStateChange).toHaveBeenCalledTimes(4);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -968,6 +989,7 @@ test("prevents removing by multiple screens with 'usePreventRemove' hook", () =>
   });
 
   const preventedState = {
+    type: 'stack',
     index: 3,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz', 'bax'],
@@ -1045,6 +1067,7 @@ test("prevents removing by multiple screens with 'usePreventRemove' hook", () =>
 
   expect(onStateChange).toHaveBeenCalledTimes(2);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 0,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz', 'bax'],
@@ -1104,6 +1127,7 @@ test("prevents removing a child screen with 'usePreventRemove' hook with 'resetR
 
   expect(onStateChange).toHaveBeenCalledTimes(1);
   expect(onStateChange).toHaveBeenCalledWith({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],
@@ -1140,6 +1164,7 @@ test("prevents removing a child screen with 'usePreventRemove' hook with 'resetR
   expect(onStateChange).toHaveBeenCalledTimes(1);
 
   expect(ref.current?.getRootState()).toEqual({
+    type: 'stack',
     index: 1,
     key: 'navigator-3',
     routeNames: ['foo', 'bar', 'baz'],

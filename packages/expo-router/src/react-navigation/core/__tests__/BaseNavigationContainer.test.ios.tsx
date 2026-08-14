@@ -93,6 +93,37 @@ test('throws when nesting containers', () => {
   ).not.toThrow("Looks like you have nested a 'NavigationContainer' inside another.");
 });
 
+test('preserves a complete initial state by identity', () => {
+  const initialState: NavigationState = {
+    stale: false,
+    key: 'root',
+    index: 0,
+    routeNames: ['home'],
+    routes: [{ key: 'home', name: 'home' }],
+  };
+  const ref = createNavigationContainerRef<ParamListBase>();
+
+  function Stack(props: any) {
+    const { state, descriptors, NavigationContent } = useNavigationBuilder(StackRouter, props);
+
+    return (
+      <NavigationContent>
+        {state.routes.map((route) => descriptors[route.key]!.render())}
+      </NavigationContent>
+    );
+  }
+
+  render(
+    <BaseNavigationContainer ref={ref} initialState={initialState}>
+      <Stack>
+        <Screen name="home">{() => null}</Screen>
+      </Stack>
+    </BaseNavigationContainer>
+  );
+
+  expect(ref.current?.getRootState()).toBe(initialState);
+});
+
 test('handle dispatching with ref', () => {
   function CurrentRootRouter(options: DefaultRouterOptions) {
     const CurrentMockRouter = MockRouter(options);

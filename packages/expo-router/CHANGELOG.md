@@ -65,6 +65,7 @@
 
 ### 💡 Others
 
+- Seed complete navigation state from the initial deep link. ([#TODO](https://github.com/expo/expo/pull/TODO) by [@Ubax](https://github.com/Ubax))
 - Rename the routing queue's `ROUTER_LINK` item to `NAVIGATE_TO_HREF` and wrap raw navigation actions in a generic `ACTION` intent. `linkTo('..')` now defers a queued `GO_BACK` instead of calling `navigationRef.goBack()` synchronously, and `goBack()` no longer throws when the navigation container is not ready. ([#TODO](https://github.com/expo/expo/pull/TODO) by [@Ubax](https://github.com/Ubax))
 - Render only the focused tab route during the first render. ([#48618](https://github.com/expo/expo/pull/48618) by [@Ubax](https://github.com/Ubax))
 - Order JS Tabs, NativeTabs, headless tabs and Drawer by `routeNames` order ([#48374](https://github.com/expo/expo/pull/48374) by [@Ubax](https://github.com/Ubax))

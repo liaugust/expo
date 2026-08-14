@@ -1,6 +1,8 @@
 import React from 'react';
 import { I18nManager } from 'react-native';
 
+import { seedStoreState } from '../global-state/store';
+import { useExpoRouterStore } from '../global-state/storeContext';
 import { useImperativeApiEmitter } from '../imperative-api';
 import type {
   DocumentTitleOptions,
@@ -74,6 +76,7 @@ function NavigationContainerInner(
   }: Props<ParamListBase>,
   ref?: React.Ref<NavigationContainerRef<ParamListBase> | null>
 ) {
+  const store = useExpoRouterStore();
   const isLinkingEnabled = linking ? linking.enabled !== false : false;
 
   if (linking?.config) {
@@ -148,7 +151,24 @@ function NavigationContainerInner(
     }
   });
 
-  const [isResolved, initialState] = useThenable(getInitialState);
+  const [isResolved, linkingState] = useThenable(getInitialState);
+  const initialState = rest.initialState ?? linkingState;
+  if (
+    store &&
+    // Linking state remains the initial state forever. Once navigation is ready,
+    // `onStateChange` owns the store and this must not restore stale state.
+    !refContainer.current?.isReady() &&
+    // Explicit initial state is already managed by the caller; only bridge linking state.
+    rest.initialState == null &&
+    // Async linking may not have produced its initial state yet.
+    initialState &&
+    // Avoid recalculating route info when the store already has this exact state.
+    initialState !== store.state
+  ) {
+    // TODO(@ubax): remove this when we migrate to global state
+    // Children read route info during this render, so an effect would update the store too late.
+    seedStoreState(initialState);
+  }
 
   React.useImperativeHandle(ref, () => refContainer.current!);
 
@@ -169,7 +189,7 @@ function NavigationContainerInner(
             theme={theme}
             onReady={onReadyForLinkingHandling}
             onStateChange={onStateChangeForLinkingHandling}
-            initialState={rest.initialState == null ? initialState : rest.initialState}
+            initialState={initialState}
             ref={refContainer}
           />
         </LinkingContext.Provider>

@@ -1,14 +1,43 @@
 import { expect, jest, test } from '@jest/globals';
 import { render, type RenderAPI } from '@testing-library/react-native';
 
+import type { RouteNode } from '../../Route';
 import { routingQueue } from '../../global-state/routingQueue';
+import { storeRef as mockStoreRef } from '../../global-state/store';
 import { createNavigationContainerRef, type ParamListBase } from '../../react-navigation/core';
+import { NavigationContainer } from '../NavigationContainer';
 import { useLinking } from '../useLinking';
 
 let errorSpy: jest.SpiedFunction<typeof console.error> | undefined;
+let mockRouteNode: RouteNode;
+
+jest.mock('../../global-state/storeContext', () => ({
+  useExpoRouterStore: () => ({
+    get state() {
+      return mockStoreRef.current.state;
+    },
+    get routeNode() {
+      return mockRouteNode;
+    },
+  }),
+}));
+
+function node(route: string, children: RouteNode[] = []): RouteNode {
+  return {
+    type: 'route',
+    route,
+    children,
+    dynamic: null,
+    contextKey: route,
+    loadRoute: () => ({}),
+  };
+}
 
 beforeEach(() => {
   routingQueue.queue = [];
+  mockRouteNode = node('root', [node('home', [node('[id]')])]);
+  mockStoreRef.current.state = undefined;
+  mockStoreRef.current.routeInfo = undefined;
 });
 
 afterEach(() => {
@@ -53,6 +82,68 @@ test('queues an incoming deep link using its extracted app path', () => {
       },
     },
   ]);
+});
+
+test('resolves a completed state from an async initial URL without writing to the store', async () => {
+  const ref = createNavigationContainerRef<ParamListBase>();
+  let getInitialState: ReturnType<typeof useLinking>['getInitialState'] | undefined;
+  const getStateFromPath = jest.fn(() => ({
+    routes: [
+      {
+        name: '__root',
+        state: {
+          routes: [
+            {
+              name: 'home',
+              state: { routes: [{ name: '[id]', path: '/home/42', params: { id: '42' } }] },
+            },
+          ],
+        },
+      },
+    ],
+  }));
+
+  function Sample() {
+    getInitialState = useLinking(
+      ref,
+      {
+        prefixes: ['example://'],
+        getInitialURL: () => Promise.resolve('example://home/42'),
+        getStateFromPath,
+      },
+      () => {}
+    ).getInitialState;
+    return null;
+  }
+
+  render(<Sample />);
+  const state = await getInitialState?.();
+
+  expect(getStateFromPath).toHaveBeenCalledWith('/home/42', undefined);
+  expect(state?.routes[0]!.state?.routes[0]!.state).toMatchObject({
+    stale: false,
+    key: expect.any(String),
+    routeNames: ['[id]'],
+  });
+  expect(mockStoreRef.current.state).toBeUndefined();
+  expect(mockStoreRef.current.routeInfo).toBeUndefined();
+});
+
+test('seeds the store when a synchronous initial URL is absent', () => {
+  render(
+    <NavigationContainer
+      documentTitle={{ enabled: false }}
+      linking={{ prefixes: [], getInitialURL: () => null }}>
+      {null}
+    </NavigationContainer>
+  );
+
+  expect(mockStoreRef.current.state).toMatchObject({
+    stale: false,
+    routeNames: ['__root', '+not-found', '_sitemap'],
+    routes: [{ name: '__root' }],
+  });
+  expect(mockStoreRef.current.routeInfo?.pathname).toBe('/');
 });
 
 test('throws if multiple instances of useLinking are used', () => {

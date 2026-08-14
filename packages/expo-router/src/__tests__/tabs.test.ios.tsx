@@ -421,12 +421,10 @@ it('can use replace navigation', () => {
             },
           ],
           stale: false,
-          type: 'tab',
         },
       },
     ],
     stale: false,
-    type: 'stack',
   });
 });
 
