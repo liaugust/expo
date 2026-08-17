@@ -160,11 +160,7 @@ data class LogRecord(
 )
 
 data class SessionWithLogs(
-  @Embedded val session: Session,
-  @Relation(
-    parentColumn = "id",
-    entityColumn = "sessionId"
-  )
+  val session: Session,
   val logs: List<LogRecord>
 )
 
@@ -219,7 +215,7 @@ interface MetricDao {
   @Delete
   suspend fun delete(metrics: List<Metric>)
 
-  @Query("SELECT * FROM metrics WHERE metricId IN (:metricIds)")
+  @Query("SELECT * FROM metrics WHERE metricId IN (:metricIds) ORDER BY timestamp ASC")
   suspend fun getByIds(metricIds: List<String>): List<Metric>
 
   @Query("SELECT * FROM metrics WHERE sessionId = :sessionId ORDER BY timestamp ASC")
@@ -234,7 +230,7 @@ interface LogDao {
   @Delete
   suspend fun delete(logs: List<LogRecord>)
 
-  @Query("SELECT * FROM logs WHERE logId IN (:logIds)")
+  @Query("SELECT * FROM logs WHERE logId IN (:logIds) ORDER BY timestamp ASC")
   suspend fun getByIds(logIds: List<String>): List<LogRecord>
 
   @Query("DELETE FROM logs WHERE timestamp < :cutoffTimestamp")
