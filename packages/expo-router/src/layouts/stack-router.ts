@@ -21,6 +21,7 @@ import {
 } from '../react-navigation/native';
 import type { NativeStackNavigatorProps } from '../react-navigation/native-stack';
 import { attachRouteState } from '../react-navigation/routers/attachRouteState';
+import { ensureStateType } from '../react-navigation/routers/ensureStateType';
 import type { SingularOptions } from '../useScreens';
 import { getSingularId } from '../useScreens';
 
@@ -82,6 +83,8 @@ export const stackRouterOverride: NonNullable<NativeStackNavigatorProps['UNSTABL
 ) => {
   return {
     getStateForAction: (state, action, options) => {
+      state = ensureStateType(state, 'stack');
+
       if (action.target && action.target !== state.key) {
         return null;
       }
@@ -357,7 +360,6 @@ export const stackRouterOverride: NonNullable<NativeStackNavigatorProps['UNSTABL
             return {
               state: {
                 ...state,
-                type: 'stack',
                 routes: state.routes.map((r) => {
                   if (r.key !== route?.key) {
                     return r;
@@ -399,7 +401,6 @@ export const stackRouterOverride: NonNullable<NativeStackNavigatorProps['UNSTABL
             return {
               state: {
                 ...state,
-                type: 'stack',
                 // START FORK
                 // Adding the current preloaded route to the beginning of the preloadedRoutes array
                 // This ensures that the preloaded route will be the next one after the visible route

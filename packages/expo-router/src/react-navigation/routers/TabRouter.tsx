@@ -5,6 +5,7 @@ import { isArrayEqual } from '../core/isArrayEqual';
 import { BaseRouter } from './BaseRouter';
 import { attachRouteState, type RouteState } from './attachRouteState';
 import { createRouteFromAction } from './createRouteFromAction';
+import { ensureStateType } from './ensureStateType';
 import type {
   CommonNavigationAction,
   DefaultRouterOptions,
@@ -330,15 +331,17 @@ export function TabRouter({
       const history = state.history?.filter((it) => routeKeys.includes(it.key)) ?? [];
 
       return changeIndex(
-        {
-          stale: false,
-          type: 'tab',
-          key: `tab-${nanoid()}`,
-          index,
-          routeNames,
-          history,
-          routes,
-        },
+        ensureStateType(
+          {
+            stale: false,
+            key: `tab-${nanoid()}`,
+            index,
+            routeNames,
+            history,
+            routes,
+          },
+          'tab'
+        ),
         index,
         backBehavior,
         initialRouteName
@@ -346,7 +349,10 @@ export function TabRouter({
     },
 
     getStateForRouteFocus(inputState, key) {
-      const state = ensureStateHistory(inputState, backBehavior, initialRouteName);
+      const state = ensureStateType(
+        ensureStateHistory(inputState, backBehavior, initialRouteName),
+        'tab'
+      );
       const index = state.routes.findIndex((r) => r.key === key);
 
       if (index === -1 || index === state.index) {
@@ -357,7 +363,10 @@ export function TabRouter({
     },
 
     getStateForAction(inputState, action, { routeGetIdList }) {
-      const state = ensureStateHistory(inputState, backBehavior, initialRouteName);
+      const state = ensureStateType(
+        ensureStateHistory(inputState, backBehavior, initialRouteName),
+        'tab'
+      );
 
       if (action.target && action.target !== state.key) {
         return null;
@@ -720,8 +729,21 @@ export function TabRouter({
           };
         }
 
-        default:
-          return BaseRouter.getStateForAction(state, action);
+        default: {
+          const result = BaseRouter.getStateForAction(state, action);
+
+          if (result === null || result.state.stale !== false) {
+            return result;
+          }
+
+          return {
+            ...result,
+            state: ensureStateType(
+              ensureStateHistory(result.state, backBehavior, initialRouteName),
+              state.type
+            ),
+          };
+        }
       }
     },
 
