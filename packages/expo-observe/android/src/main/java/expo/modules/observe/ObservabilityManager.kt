@@ -166,7 +166,9 @@ class BaseObservabilityManager(
     var chunkSize = dispatchChunkSize
     while (true) {
       val pendingIds = pendingMetricsManager.getPendingMetricIds(chunkSize)
-      // Use the default for the next batch unless a 413 below overrides it.
+      // Use the default for the next batch unless a 413 below overrides it. Re-discovering
+      // the limit each batch is fine: the server accepts payloads over 1 MB, so the default
+      // chunk stays far below the limit and a 413 is exceptional.
       chunkSize = dispatchChunkSize
       if (pendingIds.isEmpty()) {
         break
@@ -209,8 +211,11 @@ class BaseObservabilityManager(
             if (dispatchedMetricIds.size > 1) {
               chunkSize = dispatchedMetricIds.size / 2
             } else {
+              // A single record can't realistically exceed the server's payload limit, so drop
+              // it as a last-resort safety valve and stop this dispatch round.
               Log.w(OBSERVE_TAG, "Dropping metric event that exceeds the server's payload limit")
               pendingMetricsManager.removePendingMetrics(dispatchedMetricIds)
+              break
             }
           }
           is DispatchResult.Success, is DispatchResult.RetryableFailure -> Unit
@@ -248,7 +253,9 @@ class BaseObservabilityManager(
     var chunkSize = dispatchChunkSize
     while (true) {
       val pendingIds = pendingLogsManager.getPendingLogIds(chunkSize)
-      // Use the default for the next batch unless a 413 below overrides it.
+      // Use the default for the next batch unless a 413 below overrides it. Re-discovering
+      // the limit each batch is fine: the server accepts payloads over 1 MB, so the default
+      // chunk stays far below the limit and a 413 is exceptional.
       chunkSize = dispatchChunkSize
       if (pendingIds.isEmpty()) {
         break
@@ -293,8 +300,11 @@ class BaseObservabilityManager(
             if (dispatchedLogIds.size > 1) {
               chunkSize = dispatchedLogIds.size / 2
             } else {
+              // A single record can't realistically exceed the server's payload limit, so drop
+              // it as a last-resort safety valve and stop this dispatch round.
               Log.w(OBSERVE_TAG, "Dropping log event that exceeds the server's payload limit")
               pendingLogsManager.removePendingLogs(dispatchedLogIds)
+              break
             }
           }
           is DispatchResult.Success, is DispatchResult.RetryableFailure -> Unit
